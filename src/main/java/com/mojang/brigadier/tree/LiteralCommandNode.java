@@ -23,14 +23,14 @@ import java.util.function.Predicate;
 public class LiteralCommandNode<S> extends CommandNode<S> {
     private final String literal;
     private final String literalLowerCase;
-    private boolean isCaseInsensitive = false;
+    private boolean ignoreCase;
 
     public LiteralCommandNode(final String literal, final Command<S> command, final Predicate<S> requirement, final CommandNode<S> redirect, final RedirectModifier<S> modifier, final boolean forks,
-                              final boolean isCaseInsensitive) {
+                              final boolean ignoreCase) {
         super(command, requirement, redirect, modifier, forks);
         this.literal = literal;
         this.literalLowerCase = literal.toLowerCase(Locale.ROOT);
-        this.isCaseInsensitive = isCaseInsensitive;
+        this.ignoreCase = ignoreCase;
     }
 
     public String getLiteral() {
@@ -42,11 +42,7 @@ public class LiteralCommandNode<S> extends CommandNode<S> {
         return literal;
     }
 
-    public boolean isCaseInsensitive() { return isCaseInsensitive; }
-
-    public void caseInsensitive(boolean isCaseInsensitive) {
-        this.isCaseInsensitive = isCaseInsensitive;
-    }
+    public boolean ignoreCase() { return ignoreCase; }
 
     @Override
     public void parse(final StringReader reader, final CommandContextBuilder<S> contextBuilder) throws CommandSyntaxException {
@@ -68,7 +64,7 @@ public class LiteralCommandNode<S> extends CommandNode<S> {
             boolean foundMatch = false;
             String subString = reader.getString().substring(start, end);
 
-            if (isCaseInsensitive) {
+            if (ignoreCase) {
                 foundMatch = subString.equalsIgnoreCase(literal);
             } else {
                 foundMatch = subString.equals(literal);
