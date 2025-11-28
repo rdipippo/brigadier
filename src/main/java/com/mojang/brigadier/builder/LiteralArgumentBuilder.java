@@ -9,14 +9,23 @@ import com.mojang.brigadier.tree.LiteralCommandNode;
 public class LiteralArgumentBuilder<S> extends ArgumentBuilder<S, LiteralArgumentBuilder<S>> {
     private final String literal;
 
-    private boolean isCaseInsensitive = false;
+    private final boolean ignoreCase;
 
-    protected LiteralArgumentBuilder(final String literal) {
+    public LiteralArgumentBuilder(final String literal) {
+        this(literal, false);
+    }
+
+    public LiteralArgumentBuilder(final String literal, final boolean ignoreCase) {
         this.literal = literal;
+        this.ignoreCase = ignoreCase;
     }
 
     public static <S> LiteralArgumentBuilder<S> literal(final String name) {
-        return new LiteralArgumentBuilder<>(name);
+        return new LiteralArgumentBuilder<>(name, false);
+    }
+    
+    public static <S> LiteralArgumentBuilder<S> literal(final String name, final boolean ignoreCase) {
+        return new LiteralArgumentBuilder<>(name, ignoreCase);
     }
 
     @Override
@@ -28,16 +37,11 @@ public class LiteralArgumentBuilder<S> extends ArgumentBuilder<S, LiteralArgumen
         return literal;
     }
 
-    public boolean isCaseInsensitive() { return isCaseInsensitive; }
-
-    public LiteralArgumentBuilder<S> caseInsensitive(boolean isCaseInsensitive) {
-        this.isCaseInsensitive = isCaseInsensitive;
-        return getThis();
-    }
+    public boolean ignoreCase() { return ignoreCase; }
 
     @Override
     public LiteralCommandNode<S> build() {
-        final LiteralCommandNode<S> result = new LiteralCommandNode<>(getLiteral(), getCommand(), getRequirement(), getRedirect(), getRedirectModifier(), isFork(), isCaseInsensitive());
+        final LiteralCommandNode<S> result = new LiteralCommandNode<>(getLiteral(), getCommand(), getRequirement(), getRedirect(), getRedirectModifier(), isFork(), ignoreCase());
 
         for (final CommandNode<S> argument : getArguments()) {
             result.addChild(argument);

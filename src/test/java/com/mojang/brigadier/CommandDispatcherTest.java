@@ -66,7 +66,7 @@ public class CommandDispatcherTest {
     @SuppressWarnings("unchecked")
     @Test
     public void testCreateAndExecuteCaseInsensitiveCommand() throws Exception {
-        subject.register(literal("Foo").then(argument("bar", integer()).executes(command)).caseInsensitive(true));
+        subject.register(literal("Foo", true).then(argument("bar", integer()).executes(command)));
 
         assertThat(subject.execute("foo 123", source), is(42));
         verify(command).run(any(CommandContext.class));
@@ -83,7 +83,7 @@ public class CommandDispatcherTest {
 
     @Test
     public void testCreateAndExecuteCaseInsensitiveOffsetCommand() throws Exception {
-        subject.register(literal("Foo").executes(command).caseInsensitive(true));
+        subject.register(literal("Foo", true).executes(command));
 
         assertThat(subject.execute(inputWithOffset("/foo", 1), source), is(42));
         verify(command).run(any(CommandContext.class));
